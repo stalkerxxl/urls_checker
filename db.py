@@ -1,5 +1,9 @@
+import logging
+
 from tortoise.models import Model
 from tortoise import fields, Tortoise
+
+from config import DB_NAME
 
 
 class Domain(Model):
@@ -11,8 +15,17 @@ class Domain(Model):
     updated_at = fields.DatetimeField(auto_now=True)
 
 
-async def db_init():
+async def init_db():
     await Tortoise.init(
-        db_url="sqlite://database/db.sqlite3", modules={"models": ["db"]}
+        db_url=f"sqlite://database/{DB_NAME}", modules={"models": ["db"]}
     )
+    logging.info("Initializing database...")
+
+
+async def close_db():
+    await Tortoise.close_connections()
+
+
+async def create_schema():
     await Tortoise.generate_schemas()
+    logging.info("Database schema created.")

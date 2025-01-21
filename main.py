@@ -1,11 +1,23 @@
 import asyncio
+import logging
 
-from db import db_init
+from tortoise import Tortoise
+
+from db import init_db, create_schema, close_db
 
 
 async def main():
-    await db_init()
+    try:
+        await init_db()
+        await create_schema()
+    except KeyboardInterrupt:
+        logging.info("Shutting down...")
+    finally:
+        await close_db()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        logging.exception("Error in main", exc_info=e)
