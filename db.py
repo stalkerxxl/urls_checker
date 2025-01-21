@@ -43,7 +43,7 @@ async def add_domain(url: str):
     if not await Domain.exists(url=url):
         # fixme bulk_create is faster?
         await Domain.create(url=url)
-        logging.info(f"Domain added: {url}")
+        logging.info(f"Domain added to db: {url}")
 
 
 async def _populate_from_txt(file_path: str):
