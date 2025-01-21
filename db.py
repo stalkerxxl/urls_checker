@@ -37,7 +37,7 @@ async def populate_data():
         raise ValueError(f"Unsupported file type: {file_extension}")
 
 
-async def _add_domain(url: str):
+async def add_domain(url: str):
     if not url.startswith("https://"):
         url = "https://" + url
     if not await Domain.exists(url=url):
@@ -52,9 +52,9 @@ async def _populate_from_txt(file_path: str):
             url = line.strip()
             if url:
                 try:
-                    await _add_domain(url)
-                except Exception as e:
-                    logging.error(f"Error adding domain from txt: {url}, error: {e}")
+                    await add_domain(url)
+                except Exception as ex:
+                    logging.error(f"Error adding domain from txt: {url}, error: {ex}")
     logging.info(f"Data populated from txt file: {file_path}")
 
 
@@ -66,10 +66,10 @@ async def _populate_from_csv(file_path: str):
                 url = row[0].strip()
                 if url:
                     try:
-                        await _add_domain(url)
-                    except Exception as e:
+                        await add_domain(url)
+                    except Exception as ex:
                         logging.error(
-                            f"Error adding domain from csv: {url}, error: {e}"
+                            f"Error adding domain from csv: {url}, error: {ex}"
                         )
     logging.info(f"Data populated from csv file: {file_path}")
 
@@ -91,8 +91,9 @@ async def main():
         await close_db()
 
 
+# only for development mode!!!
 if __name__ == "__main__":
     try:
         asyncio.run(main())
     except Exception as e:
-        logging.exception("Error in main", exc_info=e)
+        logging.error(f"Unexpected exception: {repr(e)}")

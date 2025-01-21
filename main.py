@@ -1,15 +1,14 @@
 import asyncio
 import logging
 
-from tortoise import Tortoise
-
-from db import init_db, create_schema, close_db
+from db import init_db, create_schema, close_db, populate_data
 
 
 async def main():
     try:
         await init_db()
         await create_schema()
+        await populate_data()
     except KeyboardInterrupt:
         logging.info("Shutting down...")
     finally:
